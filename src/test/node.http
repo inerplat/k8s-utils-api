@@ -35,3 +35,32 @@ Content-Type: application/json
   "name": "worker6-ubuntu-seoul",
   "key": "123"
 }
+
+### fail
+PUT http://localhost:8080/api/v1/private/resource/node/taint
+Content-Type: application/json
+
+{
+  "name": "worker6-ubuntu-seoul",
+  "effect": "NoSchedule"
+}
+
+###
+PUT http://localhost:8080/api/v1/private/workload/deployment/toleration
+Content-Type: application/json
+
+{
+  "name": "devzat-deployment",
+  "key": "kkk",
+  "effect": "NoSchedule",
+  "operator": "Exists"
+}
+
+###
+DELETE http://localhost:8080/api/v1/private/workload/deployment/toleration
+Content-Type: application/json
+
+{
+  "name": "devzat-deployment",
+  "key": "kkk"
+}

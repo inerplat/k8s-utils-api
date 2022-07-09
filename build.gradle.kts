@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
+    kotlin("kapt") version "1.6.21"
 }
 
 group = "com.inerplat"
@@ -29,6 +30,8 @@ dependencies {
     implementation("org.postgresql:postgresql:42.3.6")
     implementation("org.springframework.session:spring-session-jdbc:2.7.0")
     implementation("io.kubernetes:client-java:15.0.1")
+    implementation("org.mapstruct:mapstruct:1.5.2.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
     developmentOnly("org.springframework.boot:spring-boot-devtools:2.7.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.0")
     testImplementation("org.springframework.security:spring-security-test:5.7.1")

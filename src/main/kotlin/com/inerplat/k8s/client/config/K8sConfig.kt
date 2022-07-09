@@ -1,9 +1,12 @@
 package com.inerplat.k8s.client.config
 
+import io.kubernetes.client.openapi.apis.AppsV1Api
 import io.kubernetes.client.util.Config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import io.kubernetes.client.openapi.apis.CoreV1Api
+import org.springframework.context.annotation.DependsOn
 
 
 @Configuration
@@ -16,11 +19,19 @@ class K8sConfig {
 
     @Bean
     fun k8sClientConfig() {
-        val client = Config.fromToken(
-            host,
-            token,
-            false
-        )!!
+        val client = Config.fromToken(host, token, false)!!
         io.kubernetes.client.openapi.Configuration.setDefaultApiClient(client)
+    }
+
+    @Bean
+    @DependsOn("k8sClientConfig")
+    fun coreV1Api(): CoreV1Api {
+        return CoreV1Api()
+    }
+
+    @Bean
+    @DependsOn("k8sClientConfig")
+    fun appsV1Api(): AppsV1Api {
+        return AppsV1Api()
     }
 }

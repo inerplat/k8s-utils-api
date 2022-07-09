@@ -3,17 +3,25 @@ package com.inerplat.k8s.client.model.dto
 import io.kubernetes.client.openapi.models.V1Node
 import java.math.BigDecimal
 
+data class NodeRequest(
+    val name: String,
+    val key: String?,
+    val value: String?,
+    val effect: String?
+)
 
-abstract class NodeResponseSummary(
+abstract class NodeResponseBase(
     open val name: String,
     open val nodeIps: List<String>,
     open val taints: List<Map<String, String?>>?,
-) {
-    constructor(nodeResponse: NodeResponse) : this(
-        nodeResponse.name,
-        nodeResponse.nodeIps,
-        nodeResponse.taints
-    )
+)
+
+open class NodeResponseSummary(
+    override val name: String,
+    override val nodeIps: List<String>,
+    override val taints: List<Map<String, String?>>?,
+) : NodeResponseBase(name, nodeIps, taints) {
+    constructor(nr: NodeResponse) : this(nr.name, nr.nodeIps, nr.taints)
 }
 
 data class NodeResponse(
@@ -52,6 +60,7 @@ data class NodeResponse(
         node.status!!.capacity!!["ephemeral-storage"]["number"] as BigDecimal,
         node.status!!.capacity!!["pods"]["number"] as BigDecimal?
     )
+    fun summary() : NodeResponseSummary = NodeResponseSummary(this)
 }
 
 operator fun Any?.get(s: String): Any? {
