@@ -1,0 +1,37 @@
+PUT http://localhost:8080/api/v1/private/resource/node/taint
+Content-Type: application/json
+
+{
+  "name": "worker6-ubuntu-seoul",
+  "key": "kkk",
+  "value": "vvv",
+  "effect": "NoSchedule"
+}
+
+###
+PUT http://localhost:8080/api/v1/private/resource/node/taint
+Content-Type: application/json
+
+{
+  "name": "worker6-ubuntu-seoul",
+  "key": "123",
+  "effect": "NoSchedule"
+}
+
+### fail
+PUT http://localhost:8080/api/v1/private/resource/node/taint
+Content-Type: application/json
+
+{
+  "name": "worker6-ubuntu-seoul",
+  "effect": "NoSchedule"
+}
+
+###
+DELETE http://localhost:8080/api/v1/private/resource/node/taint
+Content-Type: application/json
+
+{
+  "name": "worker6-ubuntu-seoul",
+  "key": "123"
+}
