@@ -3,7 +3,6 @@ package com.inerplat.k8s.client.controller.workload
 import com.inerplat.k8s.client.model.dto.DeploymentRequest
 import com.inerplat.k8s.client.model.dto.DeploymentResponse
 import com.inerplat.k8s.client.service.workload.DeploymentService
-import io.kubernetes.client.openapi.models.V1Deployment
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,7 +14,7 @@ class DeploymentController(
         @RequestParam(defaultValue = "default") namespace: String,
         @RequestParam(defaultValue = "500") limit: Int
     ): List<*> {
-        return deploymentService.getNamespaced(namespace, limit).map{
+        return deploymentService.getNamespaced(namespace, limit).map {
             DeploymentResponse(it)
         }
     }
@@ -24,7 +23,7 @@ class DeploymentController(
     fun getAll(
         @RequestParam(defaultValue = "500") limit: Int
     ): List<*> {
-        return deploymentService.getAll(limit).map{
+        return deploymentService.getAll(limit).map {
             DeploymentResponse(it)
         }
     }
@@ -33,17 +32,27 @@ class DeploymentController(
     fun putToleration(
         @RequestBody body: DeploymentRequest
     ): DeploymentResponse {
-       return DeploymentResponse(
-            deploymentService.addToleration(body.namespace, body.name, body.key, body.value, body.effect!!, body.operator)!!
-       )
+        if(body.operator.equals("Exists") && body.value != null) {
+            throw IllegalArgumentException("Value must be empty when operator is Exists")
+        }
+        return DeploymentResponse(
+            deploymentService.addToleration(
+                body.namespace,
+                body.name,
+                body.key,
+                body.value,
+                body.effect!!,
+                body.operator
+            )!!
+        )
     }
 
     @DeleteMapping("/api/v1/private/workload/deployment/toleration")
     fun deleteToleration(
         @RequestBody body: DeploymentRequest
     ): DeploymentResponse {
-       return DeploymentResponse(
+        return DeploymentResponse(
             deploymentService.deleteToleration(body.namespace, body.name, body.key)!!
-       )
+        )
     }
 }
