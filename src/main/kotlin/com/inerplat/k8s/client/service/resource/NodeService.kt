@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.inerplat.k8s.client.model.JsonPatch
 import com.inerplat.k8s.client.model.dto.NodeResponse
 import com.inerplat.k8s.client.model.dto.NodeResponseSummary
+import com.inerplat.k8s.client.model.dto.get
 import com.inerplat.k8s.client.utility.StringUtils
 import io.kubernetes.client.custom.V1Patch
 import io.kubernetes.client.openapi.apis.CoreV1Api
@@ -16,12 +17,20 @@ import org.springframework.stereotype.Service
 class NodeService(
     private val coreV1Api: CoreV1Api
 ) {
-    fun getAllNodes(limit: Int): List<V1Node> {
-        return coreV1Api.listNode(null, null, null, null, null, limit, null, null, 10, null).items
+    fun getAllNodes(limit: Int, taint: String?, contain: Boolean?): List<V1Node> {
+        val nodeList = coreV1Api.listNode(null, null, null, null, null, limit, null, null, 10, null).items
+        if (taint == null) return nodeList
+        return nodeList.filter {
+            val result = it.spec!!.taints?.any { i -> i["key"] == taint }
+            when (contain) {
+                true -> result == true
+                else -> result == false || result == null
+            }
+        }
     }
 
     fun getNode(name: String?, ip: String?): V1Node {
-        if (ip != null) getAllNodes(0).forEach {
+        if (ip != null) getAllNodes(0, null, null).forEach {
             if (it.status!!.addresses?.any { i -> i.address == ip } == true) {
                 if (name == null) return it
                 else if (it.metadata!!.name == name) return it
