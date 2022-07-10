@@ -4,10 +4,11 @@ import io.kubernetes.client.openapi.models.V1Node
 import java.math.BigDecimal
 
 data class NodeRequest(
-    val name: String,
+    val name: String?,
     val key: String?,
     val value: String?,
-    val effect: String?
+    val effect: String?,
+    val count: Int?
 )
 
 abstract class NodeResponseBase(

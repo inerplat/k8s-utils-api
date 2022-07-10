@@ -1,8 +1,11 @@
 package com.inerplat.k8s.client.service.resource
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.inerplat.k8s.client.model.JsonPatch
 import com.inerplat.k8s.client.model.dto.NodeResponse
 import com.inerplat.k8s.client.model.dto.NodeResponseSummary
+import com.inerplat.k8s.client.utility.StringUtils
+import io.kubernetes.client.custom.V1Patch
 import io.kubernetes.client.openapi.apis.CoreV1Api
 import io.kubernetes.client.openapi.models.V1Node
 import io.kubernetes.client.openapi.models.V1Taint
@@ -17,7 +20,13 @@ class NodeService(
         return coreV1Api.listNode(null, null, null, null, null, limit, null, null, 10, null).items
     }
 
-    fun getNode(name: String): V1Node {
+    fun getNode(name: String?, ip: String?): V1Node {
+        if (ip != null) getAllNodes(0).forEach {
+            if (it.status!!.addresses?.any { i -> i.address == ip } == true) {
+                if (name == null) return it
+                else if (it.metadata!!.name == name) return it
+            }
+        }
         return coreV1Api.readNode(name, null)
     }
 

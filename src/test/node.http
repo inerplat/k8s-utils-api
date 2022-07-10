@@ -32,8 +32,8 @@ DELETE http://localhost:8080/api/v1/private/resource/node/taint
 Content-Type: application/json
 
 {
-  "name": "worker6-ubuntu-seoul",
-  "key": "123"
+  "name": "worker3-ubuntu-seoul",
+  "key": "kkk"
 }
 
 ### fail
@@ -83,4 +83,24 @@ Content-Type: application/json
 {
   "name": "devzat-deployment",
   "key": "node-role.kubernetes.io/control-plane"
+}
+
+###
+PUT http://localhost:8080/api/v1/private/resource/node/taint/any
+Content-Type: application/json
+
+{
+  "key": "kkk",
+  "value": "vvv",
+  "effect": "NoSchedule",
+  "count": 3
+}
+
+###
+DELETE http://localhost:8080/api/v1/private/resource/node/taint/any
+Content-Type: application/json
+
+{
+  "key": "kkk",
+  "count": 3
 }
