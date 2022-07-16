@@ -27,7 +27,11 @@ class GoogleOAuth2UserService(
         val clientId = userRequest!!.clientRegistration.clientId
         val userNameAttributeName =
             userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName
-        val attributes = OAuthAttributes.ofGoogle(userNameAttributeName, oAuth2User.attributes)
+        val attributes = when (userRequest.clientRegistration.registrationId){
+            "google" -> OAuthAttributes.ofGoogle(userNameAttributeName, oAuth2User.attributes)
+            "github" -> OAuthAttributes.ofGithub(userNameAttributeName, oAuth2User.attributes)
+            else -> throw IllegalStateException("Invalid OAuth2 Provider: $clientId")
+        }
         val user = saveOrUpdate(attributes)
 
         httpSession.setAttribute("user", SessionUser(user.name, user.email, user.picture))

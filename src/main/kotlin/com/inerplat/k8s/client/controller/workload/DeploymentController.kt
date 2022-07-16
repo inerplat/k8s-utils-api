@@ -55,4 +55,13 @@ class DeploymentController(
             deploymentService.deleteToleration(body.namespace, body.name, body.key)!!
         )
     }
+
+    @PostMapping("/api/v1/private/workload/deployment/restart")
+    fun restartDeployment(
+        @RequestBody body: DeploymentRequest
+    ): DeploymentResponse {
+        return DeploymentResponse(
+            deploymentService.restart(body.namespace, body.name)!!
+        )
+    }
 }

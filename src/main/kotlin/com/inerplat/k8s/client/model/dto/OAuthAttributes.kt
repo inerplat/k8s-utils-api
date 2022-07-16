@@ -29,5 +29,14 @@ class OAuthAttributes constructor(
                 nameAttributeKey = userNameAttributeName,
             )
         }
+        fun ofGithub(userNameAttributeName: String, attributes: Map<String, Any>): OAuthAttributes {
+            return OAuthAttributes(
+                name = attributes["name"] as String,
+                email = attributes["email"] as String,
+                picture = attributes["avatar_url"] as String,
+                attributes = attributes,
+                nameAttributeKey = userNameAttributeName,
+            )
+        }
     }
 }
